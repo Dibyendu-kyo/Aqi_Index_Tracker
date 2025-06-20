@@ -1,4 +1,9 @@
-/* You can paste this in AqiMap.css */
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 .sidebar {
   width: 300px;
   background: rgba(255, 255, 255, 0.15);
@@ -73,7 +78,6 @@
   margin-top: 6px;
 }
 
-/* Header */
 .app-header {
   background: #282c34;
   color: white;
@@ -83,20 +87,33 @@
   font-weight: bold;
   font-family: 'Segoe UI', sans-serif;
   letter-spacing: 0.5px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .brand-name {
   color: #00d2ff;
 }
 
-/* Container for sidebar + map */
 .app-container {
   display: flex;
-  height: calc(100vh - 60px); /* 100vh minus header height */
+  height: calc(100vh - 60px);
+}
+
+.map-wrapper {
+  flex: 1;
+  height: 100%;
 }
 
 /* Responsive tweaks */
 @media (max-width: 768px) {
+  html, body, #root {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+
   .app-header {
     width: 100%;
     font-size: 18px;
@@ -107,7 +124,7 @@
 
   .app-container {
     flex-direction: column;
-    height: auto;
+    height: 100vh;
     width: 100vw;
     box-sizing: border-box;
   }
@@ -132,7 +149,7 @@
     box-sizing: border-box;
   }
 
-  .app-container > div:last-child {
+  .map-wrapper {
     width: 100%;
     height: 50vh;
   }
@@ -140,5 +157,6 @@
   .leaflet-container {
     width: 100% !important;
     height: 100% !important;
+    z-index: 1;
   }
 }

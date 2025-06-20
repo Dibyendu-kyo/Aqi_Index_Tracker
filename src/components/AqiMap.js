@@ -1,18 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
-import { CircleMarker } from "react-leaflet";
-import "./AqiMap.css"
-
-import {
-  MapContainer,
-  TileLayer,
-  Marker,
-  Popup,
-  useMap,
-} from "react-leaflet";
+import { CircleMarker, MapContainer, TileLayer, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import axios from "axios";
+import "./AqiMap.css";
 
-// Color-coded icons
 const getAqiIcon = (aqi) => {
   let iconUrl = "";
   if (aqi <= 50) iconUrl = "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png";
@@ -33,7 +24,6 @@ const getAqiIcon = (aqi) => {
 
 const AQICircle = ({ station }) => {
   const map = useMap();
-
   const center = [station.lat, station.lon];
   const color =
     station.aqi > 200 ? "purple" :
@@ -42,21 +32,17 @@ const AQICircle = ({ station }) => {
     station.aqi > 50 ? "yellow" : "green";
 
   const handleZoom = () => {
-    map.setView(center, 15, { animate: true }); // 🎯 Zoom-in on click
+    map.setView(center, 15, { animate: true });
   };
 
   return (
     <>
-    
-      {/* Outer ring */}
       <CircleMarker
         center={center}
         radius={25}
         pathOptions={{ color, fillOpacity: 0.2, weight: 2 }}
         eventHandlers={{ click: handleZoom }}
       />
-
-      {/* Inner core */}
       <CircleMarker
         center={center}
         radius={8}
@@ -64,31 +50,29 @@ const AQICircle = ({ station }) => {
         eventHandlers={{ click: handleZoom }}
       >
         <Popup>
-  <div style={{ textAlign: "center" }}>
-    <b>{station.station.name}</b><br />
-    AQI: {station.aqi}<br />
-    <span className="aqi-badge" style={{
-      backgroundColor:
-        station.aqi > 200 ? "#800080" :
-        station.aqi > 150 ? "#cc0000" :
-        station.aqi > 100 ? "#ff8c00" :
-        station.aqi > 50 ? "#ffcc00" : "#2ecc71",
-      color: "white"
-    }}>
-      {station.aqi > 200 ? "Very Unhealthy" :
-       station.aqi > 150 ? "Unhealthy" :
-       station.aqi > 100 ? "Moderate" :
-       station.aqi > 50 ? "Good" : "Excellent"}
-    </span>
-  </div>
-</Popup>
-
+          <div style={{ textAlign: "center" }}>
+            <b>{station.station.name}</b><br />
+            AQI: {station.aqi}<br />
+            <span className="aqi-badge" style={{
+              backgroundColor:
+                station.aqi > 200 ? "#800080" :
+                station.aqi > 150 ? "#cc0000" :
+                station.aqi > 100 ? "#ff8c00" :
+                station.aqi > 50 ? "#ffcc00" : "#2ecc71",
+              color: "white"
+            }}>
+              {station.aqi > 200 ? "Very Unhealthy" :
+               station.aqi > 150 ? "Unhealthy" :
+               station.aqi > 100 ? "Moderate" :
+               station.aqi > 50 ? "Good" : "Excellent"}
+            </span>
+          </div>
+        </Popup>
       </CircleMarker>
     </>
   );
 };
 
-// Auto-center on location change
 const MapAutoCenter = ({ coords }) => {
   const map = useMap();
   useEffect(() => {
@@ -99,9 +83,9 @@ const MapAutoCenter = ({ coords }) => {
 
 const AqiMap = () => {
   const [aqiStations, setAqiStations] = useState([]);
-  const [userLocation, setUserLocation] = useState([28.6139, 77.209]); // Default Delhi
+  const [userLocation, setUserLocation] = useState([28.6139, 77.209]);
   const [manualLocation, setManualLocation] = useState("");
-  const audioPlayedRef = useRef(false); // Avoid repeating audio
+  const audioPlayedRef = useRef(false);
 
   const playAudioAlert = () => {
     if (!audioPlayedRef.current) {
@@ -115,7 +99,6 @@ const AqiMap = () => {
   const fetchAQI = async (lat, lon) => {
     const token = process.env.REACT_APP_AQICN_TOKEN;
     const radius = 1.0;
-
     const url = `https://api.waqi.info/map/bounds/?token=${token}&latlng=${lat - radius},${lon - radius},${lat + radius},${lon + radius}`;
 
     try {
@@ -131,11 +114,10 @@ const AqiMap = () => {
 
         setAqiStations(validStations);
 
-        // 🔊 Audio alert if AQI > 200
         if (validStations.some((s) => s.aqi > 200)) {
           playAudioAlert();
         } else {
-          audioPlayedRef.current = false; // Reset if no extreme pollution
+          audioPlayedRef.current = false;
         }
       }
     } catch (error) {
@@ -144,27 +126,26 @@ const AqiMap = () => {
   };
 
   const fetchCoordinatesFromCity = async (city) => {
-  const apiKey = process.env.REACT_APP_GEOCODE_API_KEY;
-  try {
-    const res = await axios.get(
-      `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(city)}&key=${apiKey}`
-    );
+    const apiKey = process.env.REACT_APP_GEOCODE_API_KEY;
+    try {
+      const res = await axios.get(
+        `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(city)}&key=${apiKey}`
+      );
 
-    if (res.data?.results?.length > 0) {
-      const { lat, lng } = res.data.results[0].geometry;
-      const coords = [lat, lng];
-      setUserLocation(coords);
-      audioPlayedRef.current = false; // ✅ Reset speech flag
-      fetchAQI(lat, lng);
-    } else {
-      alert("Location not found");
+      if (res.data?.results?.length > 0) {
+        const { lat, lng } = res.data.results[0].geometry;
+        const coords = [lat, lng];
+        setUserLocation(coords);
+        audioPlayedRef.current = false;
+        fetchAQI(lat, lng);
+      } else {
+        alert("Location not found");
+      }
+    } catch (error) {
+      console.error("Geocoding Error:", error);
+      alert("Failed to fetch location");
     }
-  } catch (error) {
-    console.error("Geocoding Error:", error);
-    alert("Failed to fetch location");
-  }
-};
-
+  };
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
@@ -175,76 +156,68 @@ const AqiMap = () => {
         fetchAQI(latitude, longitude);
       },
       () => {
-        fetchAQI(userLocation[0], userLocation[1]); // fallback default
+        fetchAQI(userLocation[0], userLocation[1]);
       }
     );
   }, []);
 
-  // ⏳ Auto-refresh AQI every 5 minutes
   useEffect(() => {
     const interval = setInterval(() => {
       fetchAQI(userLocation[0], userLocation[1]);
-    }, 300000); // 5 min = 300000ms
-
+    }, 300000);
     return () => clearInterval(interval);
   }, [userLocation]);
 
-  // 🧾 Top 5 most polluted
-  const topStations = [...aqiStations]
-    .sort((a, b) => b.aqi - a.aqi)
-    .slice(0, 5);
+  const topStations = [...aqiStations].sort((a, b) => b.aqi - a.aqi).slice(0, 5);
 
   return (
     <>
-    <div className="app-header">
-  🌫️ <span className="brand-name">AQI Radar</span> – Know Your Air Quality
-</div>
-
-    <div className="app-container">
-      {/* 🧾 Sidebar */}
-      <div className="sidebar">
-  <h3>😷 Top 5 Polluted Areas</h3>
-  {topStations.length > 0 ? (
-    <ul>
-      {topStations.map((station, i) => (
-        <li key={i}>
-          <b>{station.station.name}</b><br />
-          AQI: <span style={{ color: station.aqi > 200 ? "red" : "orange" }}>{station.aqi}</span>
-        </li>
-      ))}
-    </ul>
-  ) : (
-    <p style={{ textAlign: "center" }}>Loading...</p>
-  )}
-
-  <div className="search-bar">
-    <input
-      type="text"
-      placeholder="Search city (e.g., Bengaluru)"
-      value={manualLocation}
-      onChange={(e) => setManualLocation(e.target.value)}
-    />
-    <button onClick={() => fetchCoordinatesFromCity(manualLocation)}>
-      🔍 Search
-    </button>
-  </div>
-</div>
-
-      {/* 🗺️ Map */}
-      <div style={{ flex: 1 }}>
-        <MapContainer center={userLocation} zoom={11} style={{ height: "100%", width: "100%" }}>
-          <MapAutoCenter coords={userLocation} />
-          <TileLayer
-            attribution='&copy; OpenStreetMap contributors'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
-          {aqiStations.map((station, index) => (
-  <AQICircle key={index} station={station} />
-))}
-
-        </MapContainer>
+      <div className="app-header">
+        🌫️ <span className="brand-name">AQI Radar</span> – Know Your Air Quality
       </div>
-    </div>
+
+      <div className="app-container">
+        <div className="sidebar">
+          <h3>😷 Top 5 Polluted Areas</h3>
+          {topStations.length > 0 ? (
+            <ul>
+              {topStations.map((station, i) => (
+                <li key={i}>
+                  <b>{station.station.name}</b><br />
+                  AQI: <span style={{ color: station.aqi > 200 ? "red" : "orange" }}>{station.aqi}</span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p style={{ textAlign: "center" }}>Loading...</p>
+          )}
+
+          <div className="search-bar">
+            <input
+              type="text"
+              placeholder="Search city (e.g., Bengaluru)"
+              value={manualLocation}
+              onChange={(e) => setManualLocation(e.target.value)}
+            />
+            <button onClick={() => fetchCoordinatesFromCity(manualLocation)}>
+              🔍 Search
+            </button>
+          </div>
+        </div>
+
+        <div className="map-wrapper">
+          <MapContainer center={userLocation} zoom={11} style={{ height: "100%", width: "100%" }}>
+            <MapAutoCenter coords={userLocation} />
+            <TileLayer
+              attribution='&copy; OpenStreetMap contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            {aqiStations.map((station, index) => (
+              <AQICircle key={index} station={station} />
+            ))}
+          </MapContainer>
+        </div>
+      </div>
     </>
   );
 };
