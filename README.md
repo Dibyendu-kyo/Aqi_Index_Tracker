@@ -1,70 +1,81 @@
-# Getting Started with Create React App
+🌫️ AQI Radar – Know Your Air Quality
+AQI Radar is a real-time, location-based React application that visualizes air quality using the AQICN API. It alerts users about hazardous air conditions and shows nearby pollution hotspots on an interactive map using Leaflet.js.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<br>
+📸 Demo Preview
 
-## Available Scripts
+Interactive map with AQI markers and top polluted areas sidebar.
 
-In the project directory, you can run:
+🚀 Features
+✅ Real-time AQI visualization using official AQICN API.
 
-### `npm start`
+✅ Map-based display with color-coded markers (green to purple based on AQI levels).
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+✅ Voice alert for AQI > 200 — warns users to wear masks.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+✅ Top 5 polluted areas sidebar sorted dynamically.
 
-### `npm test`
+✅ Search any city manually via OpenCage Geocoding API.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+✅ Responsive layout – works on both desktop and mobile.
 
-### `npm run build`
+✅ Custom branding header and styled UI for clean presentation.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+🛠️ Tech Stack
+Frontend	APIs Used	Libraries
+React (CRA)	AQICN API	Leaflet.js
+HTML/CSS	OpenCage Geocoding API	React Leaflet
+JavaScript		Axios, Web Speech API
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+📦 Installation Guide
+1. Clone the Repository
+bash
+Copy
+Edit
+git clone https://github.com/your-username/aqi-radar.git
+cd aqi-radar
+2. Install Dependencies
+bash
+Copy
+Edit
+npm install
+3. Setup Environment Variables
+Create a .env file in the root directory:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+env
+Copy
+Edit
+REACT_APP_AQICN_TOKEN=your_aqicn_api_key_here
+REACT_APP_GEOCODE_API_KEY=your_opencage_api_key_here
+Get your AQICN API Key from: https://aqicn.org/data-platform/token/
 
-### `npm run eject`
+Get OpenCage API Key from: https://opencagedata.com/
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+4. Run the App
+bash
+Copy
+Edit
+npm start
+Visit http://localhost:3000 in your browser.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+🔍 How It Works
+Component	Responsibility
+AqiMap.jsx	Fetches AQI and geolocation data, renders map and UI
+AQICircle.jsx	Renders custom circle markers with popups
+MapAutoCenter	Automatically zooms to user or searched city
+AqiMap.css	Responsive, styled layout and design
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+🎯 Marker Legend
+AQI Range	Color	Health Meaning
+0–50	Green	Excellent
+51–100	Yellow	Good
+101–150	Orange	Moderate
+151–200	Red	Unhealthy
+201+	Purple	Very Unhealthy
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+🔊 Audio Alerts
+Once any nearby AQI > 200, users will hear a voice alert.
 
-## Learn More
+The alert plays only once per region to avoid spam.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Resets when location changes.
