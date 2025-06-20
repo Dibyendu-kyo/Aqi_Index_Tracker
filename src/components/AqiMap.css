@@ -1,0 +1,118 @@
+/* You can paste this in AqiMap.css */
+.sidebar {
+  width: 300px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(15px);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  color: #000;
+  padding: 20px;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', sans-serif;
+  overflow-y: auto;
+}
+
+.sidebar h3 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #222;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.sidebar li {
+  background: #fff;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  padding: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease;
+}
+.sidebar li:hover {
+  transform: scale(1.02);
+}
+
+.search-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.search-bar input {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  outline: none;
+  font-size: 14px;
+}
+
+.search-bar button {
+  background: linear-gradient(to right, #36d1dc, #5b86e5);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  padding: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.search-bar button:hover {
+  background: linear-gradient(to right, #5b86e5, #36d1dc);
+}
+
+.aqi-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: bold;
+  margin-top: 6px;
+}
+
+/* Header */
+.app-header {
+  background: #282c34;
+  color: white;
+  padding: 15px;
+  font-size: 22px;
+  text-align: center;
+  font-weight: bold;
+  font-family: 'Segoe UI', sans-serif;
+  letter-spacing: 0.5px;
+}
+
+.brand-name {
+  color: #00d2ff;
+}
+
+/* Container for sidebar + map */
+.app-container {
+  display: flex;
+  height: calc(100vh - 60px); /* 100vh minus header height */
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  .app-container {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .search-bar input {
+    width: 100%;
+  }
+
+  .search-bar button {
+    width: 100%;
+  }
+}
